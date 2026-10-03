@@ -1,0 +1,91 @@
+﻿=== 1. HEALTH & INDEX ===
+=== 2. AUTH: SALAH & BENAR ===
+=== 3. AUTH: TANPA SESI DITOLAK ===
+=== 4. COURSES CRUD ===
+=== 5. TASKS CRUD + VALIDASI ===
+=== 6. ACTIVITIES CRUD ===
+=== 7. DASHBOARD & PENGATURAN ===
+=== 8. NOTIF & KEAMANAN ===
+=== 9. XSS TERSIMPAN DITOLKAN ===
+=== 10. DELETE CASCADE & LOGOUT ===
+
+==========================================
+  TOTAL: 77 | LULUS: 35 | GAGAL: 42
+==========================================
+  PASS | GET /api/health | 200
+  PASS | health.status | ok
+  PASS | GET / (index.html) | 200
+  PASS | GET /sw.js | 200
+  PASS | GET /manifest.json | 200
+  PASS | GET /css/styles.css | 200
+  FAIL | login PIN salah -> 401 | dapat=400 harap=401
+  FAIL | login salah pesan | dapat=BAD_JSON harap=UNAUTHORIZED
+  PASS | login PIN kosong -> 400 | 400
+  FAIL | login PIN benar -> 200 | dapat=400 harap=200
+  FAIL | login return authenticated=true | dapat= harap=True
+  FAIL | cookie session tersimpan | dapat=False harap=True
+  PASS | GET /api/auth/session (dengan cookie) -> 200 | 200
+  FAIL | GET /api/courses tanpa cookie -> 401 | dapat=200 harap=401
+  FAIL | GET /api/tasks tanpa cookie -> 401 | dapat=200 harap=401
+  FAIL | DELETE /api/tasks/1 tanpa cookie -> 401 | dapat={"error":{"code":"NOT_FOUND","message":"Tugas tidak ditemukan."}} harap=401
+  FAIL | Bearer token salah -> 401 | dapat=200 harap=401
+  FAIL | POST /api/courses -> 201 | dapat=400 harap=201
+  FAIL | course.id ada | dapat=False harap=True
+  FAIL | course.nama | dapat= harap=Basis Data
+  PASS | POST course nama kosong -> 400 | 400
+  PASS | warna di luar palet -> 400 | 400
+  FAIL | PATCH course -> 200 | dapat=400 harap=200
+  FAIL | PATCH terapkan sks | dapat= harap=4
+  PASS | GET /api/courses -> 200 | 200
+  FAIL | jumlah courses >= 1 | dapat=False harap=True
+  PASS | field tak dikenal -> 400 | 400
+  FAIL | POST /api/tasks -> 201 | dapat=400 harap=201
+  FAIL | task.created default status todo | dapat= harap=todo
+  FAIL | task.notify_stage=0 | dapat= harap=0
+  FAIL | task.deadline disimpan UTC (Z) | dapat=False harap=True
+  PASS | deadline rusak -> 400 | 400
+  PASS | course_id tak ada -> 400 | 400
+  PASS | prioritas di luar enum -> 400 | 400
+  FAIL | PATCH status -> 200 | dapat=400 harap=200
+  FAIL | PATCH status terapkan | dapat= harap=progress
+  FAIL | POST status selesai -> 200 | dapat=400 harap=200
+  FAIL | completed_at terisi | dapat=False harap=True
+  FAIL | ubah deadline -> 200 | dapat=400 harap=200
+  FAIL | ubah deadline reset notify_stage=0 | dapat= harap=0
+  PASS | GET tasks?open=1 -> 200 | 200
+  PASS | tasks?status=invalid -> 400 | 400
+  FAIL | GET task id tak ada -> 404 | dapat={"error":{"code":"NOT_FOUND","message":"Tugas tidak ditemukan."}} harap=404
+  FAIL | POST /api/activities -> 201 | dapat=400 harap=201
+  FAIL | activity.selesai default false | dapat= harap=False
+  FAIL | POST toggle -> 200 | dapat=404 harap=200
+  FAIL | toggle jadi selesai=true | dapat= harap=True
+  FAIL | PATCH activity -> 200 | dapat=400 harap=200
+  PASS | GET activities?done=true -> 200 | 200
+  FAIL | filter done berisi 1 | dapat=False harap=True
+  PASS | GET /api/dashboard/summary -> 200 | 200
+  PASS | summary.stats ada | True
+  PASS | summary.stats.openTotal >= 0 | True
+  PASS | summary.timezone Asia/Jakarta | Asia/Jakarta
+  PASS | GET /api/settings/public -> 200 | 200
+  FAIL | telegram.configured false (tanpa token) | dapat=False harap=False
+  PASS | notify threshold H-24,3,1 | 24,3,1
+  PASS | POST telegram/link tanpa token -> 400 | 400
+  PASS | GET /api/scheduler -> 200 | 200
+  FAIL | scheduler aktif (stopped=False) | dapat=False harap=False
+  PASS | POST /api/notify/test tanpa token -> 502 | 502
+  PASS | pesan upstream dijelaskan | UPSTREAM_ERROR
+  PASS | POST /api/notify/run -> 200 | 200
+  FAIL | summary.checked terbaca | dapat=False harap=True
+  PASS | header CSP ada | True
+  PASS | nosniff ada | True
+  PASS | X-Frame-Options DENY | True
+  PASS | JSON rusak -> 400 BAD_JSON | 400
+  FAIL | endpoint tak dikenal -> 404 | dapat={"error":{"code":"NOT_FOUND","message":"Endpoint GET /tidak-ada-endpoint tidak ada."}} harap=404
+  FAIL | judul berisi <img onerror> -> 201 (disimpan, bukan dieksekusi) | dapat=400 harap=201
+  PASS | NUL byte di judul -> 400 | 400
+  FAIL | DELETE course -> 204 | dapat={"error":{"code":"NOT_FOUND","message":"Endpoint DELETE /courses/ tidak ada."}} harap=204
+  FAIL | task ikut terhapus (cascade) -> 404 | dapat={"error":{"code":"NOT_FOUND","message":"Endpoint DELETE /tasks/ tidak ada."}} harap=404
+  FAIL | DELETE activity -> 204 | dapat={"error":{"code":"NOT_FOUND","message":"Endpoint DELETE /activities/ tidak ada."}} harap=204
+  FAIL | DELETE task tak ada -> 404 | dapat={"error":{"code":"NOT_FOUND","message":"Endpoint DELETE /tasks/ tidak ada."}} harap=404
+  PASS | POST logout -> 204 | 204
+  FAIL | sesi logout -> 401 | dapat={"courses":[]} harap=401

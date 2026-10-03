@@ -1,0 +1,29 @@
+{
+  "name": "campusflow",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CampusFlow - Platform manajemen produktivitas mahasiswa (Single-User PWA Edition)",
+  "type": "commonjs",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "migrate": "node --disable-warning=ExperimentalWarning scripts/migrate.js",
+    "hash-pin": "node scripts/hash-pin.js",
+    "build:css": "tailwindcss -i public/css/tailwind.src.css -o public/css/styles.css --minify",
+    "icons": "node scripts/generate-icons.js",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js",
+    "measure:ram": "node scripts/measure-ram.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
